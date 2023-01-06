@@ -38,7 +38,7 @@ def __extract_grouple_links(soup):
                 tile_data['yaoi'] = True
 
         tile_data['single'] = True if len(
-            tile.find('div', class_='html-popover-holder') or []) else False
+            tile.find('span', class_='mangaSingle') or []) else False
 
         tiles_data.append(tile_data)
 
