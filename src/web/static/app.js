@@ -1,25 +1,26 @@
 const baseUrls = ['https://readmanga.live', 'https://mintmanga.live', 'https://shakai.ru/catalog/manga/'];
-const userID = 582791;
+// const userID = 582791;
 
-function setStatus(data) {
-   const script = document.querySelector('.status-script');
-   const id = script.attributes.id;
-   const title = document.querySelector(`[data-id="${id}"]`);
-   if (title.children.length == 0) {
-      title.innerHTML += `<span> -- ${data.data.status}</span>`;
-   } else {
-      title.children[0].innerText = ` -- ${data.data.status}`;
-   }
-   script.remove();
-}
+// TODO: fix read/mint manga status check
+// function setStatus(data) {
+//    const script = document.querySelector('.status-script');
+//    const id = script.attributes.id;
+//    const title = document.querySelector(`[data-id="${id}"]`);
+//    if (title.children.length == 0) {
+//       title.innerHTML += `<span> -- ${data.data.status}</span>`;
+//    } else {
+//       title.children[0].innerText = ` -- ${data.data.status}`;
+//    }
+//    script.remove();
+// }
 
-function getStatus(id, siteId) {
-   const statusScript = document.createElement('script');
-   statusScript.attributes.id = id;
-   statusScript.classList.add('status-script');
-   statusScript.src = `https://grouple.co/external/status?callback=setStatus&id=${id}&site=${siteId}&user=${userID}`;
-   document.body.append(statusScript);
-}
+// function getStatus(id, siteId) {
+//    const statusScript = document.createElement('script');
+//    statusScript.attributes.id = id;
+//    statusScript.classList.add('status-script');
+//    statusScript.src = `https://grouple.co/external/status?callback=setStatus&id=${id}&site=${siteId}&user=${userID}`;
+//    document.body.append(statusScript);
+// }
 
 function createLink(tile, siteId, grouple = true) {
    const linkWrap = document.createElement('div');
@@ -45,16 +46,17 @@ function createLink(tile, siteId, grouple = true) {
       linkWrap.append(chip);
    }
 
-   if (grouple) {
-      const refreshStatus = document.createElement('span');
-      refreshStatus.innerHTML = '<i class="icon icon-refresh"></i>';
-      refreshStatus.setAttribute('onclick', `getStatus(${tile['data_id']}, ${siteId})`);
-      linkWrap.append(refreshStatus);
-   }
+   // if (grouple) {
+   //    const refreshStatus = document.createElement('span');
+   //    refreshStatus.innerHTML = '<i class="icon icon-refresh"></i>';
+   //    refreshStatus.setAttribute('onclick', `getStatus(${tile['data_id']}, ${siteId})`);
+   //    linkWrap.append(refreshStatus);
+   // }
 
    return linkWrap;
 }
 
+// TODO: rewrite shakai module
 async function getShakaiManga(url, resultsDiv) {
    await fetch(url)
       .then((response) => {

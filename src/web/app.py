@@ -1,8 +1,6 @@
-from flask import Flask, render_template, request, jsonify
-from logger import log
+from flask import Flask, render_template
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-from enum import Enum
 
 BASE_URLS = ['https://readmanga.live', 'https://mintmanga.live']
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
@@ -40,7 +38,7 @@ def __extract_grouple_links(soup):
                 tile_data['yaoi'] = True
 
         tile_data['single'] = True if len(
-            tile.find('span', class_='mangaSingle') or []) else False
+            tile.find('div', class_='html-popover-holder') or []) else False
 
         tiles_data.append(tile_data)
 
@@ -53,13 +51,18 @@ def __extract_links(site_id, soup):
     return
 
 
-def __get_links(site_id=0, offset=None):
+def __get_links(site_id=0, offset=1):
     url = BASE_URLS[site_id]
     if site_id in (0, 1):
-        url = url + '/list?sortType=votes&filter=translated'
+        if site_id == 0:
+            url = url + '/list?sortType=votes&filter=translated'
+        else:
+            url = url + '/list/another/noyaoi?sortType=votes&filter=translated'
         if offset:
-            url = url + '&' + str(offset)
+            url = url + '&offset=' + str((offset-1)*70)
 
+    
+    print(url)
     page = __get_page_contents(url)
     soup = BeautifulSoup(page, 'html.parser')
 
