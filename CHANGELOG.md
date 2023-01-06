@@ -1,3 +1,15 @@
+# v0.0.2 (Fri Jan 06 2023)
+
+#### ⚠️ Pushed to `main`
+
+- moved web scrapping to python backend ([@d4rxt4r](https://github.com/d4rxt4r))
+
+#### Authors: 1
+
+- D4RKST4R ([@d4rxt4r](https://github.com/d4rxt4r))
+
+---
+
 # v0.0.1 (Fri Jan 06 2023)
 
 :tada: This release contains work from a new contributor! :tada:
