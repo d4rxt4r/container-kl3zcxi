@@ -1,10 +1,66 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ru">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>[read|mint]manga & shakai simple search</title>
+      <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
+      <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
 
+      <style>
+         .link-wrap {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            padding: 0.5em;
+         }
 
-{% block header %}
-    Header
-{% endblock header %}
+         .link-wrap > span {
+            display: flex;
+            margin-left: 20px;
+            cursor: pointer;
+         }
 
-{% block content %}
-    Content
-{% endblock %}
+         .chip {
+            margin-left: 8px;
+            font-size: 14px;
+         }
+      </style>
+   </head>
+
+   <body style="background-color: #f7f8f9">
+      <div class="pagination p-2">
+         <select class="form-select" id="siteSelect">
+            <option selected value="1">readmanga</option>
+            <option value="2">mintmanga</option>
+            <!-- <option value="3">shakai</option> -->
+         </select>
+
+         <input
+            class="form-input"
+            type="number"
+            step="1"
+            value="1"
+            placeholder="0"
+            id="pageInput"
+            style="width: 25vw"
+         />
+
+         <button class="btn btn-primary" id="load">Загрузить!</button>
+      </div>
+
+      {{ page }}
+
+      <template id="noResults">
+         <div class="empty">
+            <div class="empty-icon">
+               <i class="icon icon-cross icon-4x"></i>
+            </div>
+            <p class="empty-title h5">Результатов нет!</p>
+         </div>
+      </template>
+
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+      <script src="{{ url_for('static', filename='app.js') }}"></script>
+   </body>
+</html>
