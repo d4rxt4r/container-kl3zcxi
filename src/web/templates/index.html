@@ -25,6 +25,40 @@
             margin-left: 8px;
             font-size: 14px;
          }
+
+         .columns {
+            row-gap: 16px;
+            padding: 0 8px;
+         }
+
+         .card {
+            flex-direction: row;
+         }
+
+         .card-header {
+            min-width: 0;
+         }
+
+         .card-subtitle {
+            padding-top: 4px;
+         }
+
+         .card-image {
+            width: 130px;
+            flex-shrink: 0;
+         }
+
+         .text-overflow {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+         }
+
+         .chip {
+            margin-left: 0;
+            font-size: 14px;
+            margin-right: 8px;
+         }
       </style>
    </head>
 
@@ -49,7 +83,23 @@
          <button class="btn btn-primary" id="load">Загрузить!</button>
       </div>
 
-      {{ page }}
+      <div class="columns"></div>
+
+      <template id="tileTpl">
+         <div class="column col-4 col-xs-12">
+            <div class="card">
+               <div class="card-image">
+                  <img class="img-responsive p-centered" width="130" src="" alt="" />
+               </div>
+               <div class="card-header">
+                  <div class="card-title text-overflow h5">
+                     <a href="" class="card-link"> </a>
+                  </div>
+                  <div class="card-subtitle"></div>
+               </div>
+            </div>
+         </div>
+      </template>
 
       <template id="noResults">
          <div class="empty">

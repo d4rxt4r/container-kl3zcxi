@@ -22,29 +22,93 @@ const baseUrls = ['https://readmanga.live', 'https://mintmanga.live', 'https://s
 //    document.body.append(statusScript);
 // }
 
-function createLink(tile, siteId, grouple = true) {
-   const linkWrap = document.createElement('div');
-   const link = document.createElement('a');
+// TODO: rewrite shakai module
+// async function getShakaiManga(url, resultsDiv) {
+//    await fetch(url)
+//       .then((response) => {
+//          return response.text();
+//       })
+//       .then((data) => {
+//          console.log(data);
+//       });
 
-   linkWrap.classList.add('link-wrap');
+//    // shakai
+//    // if (siteId == 3) {
+//    //    const url = proxyUrl + encodeURIComponent(baseUrls[2] + offset);
+//    //    getShakaiManga(url, resultsDiv);
+//    //    // await fetch(url)
+//    //    //     .then(response => { return response.text() })
+//    //    //     .then(data => {
+//    //    //         const parser = new DOMParser();
+//    //    //         const parsed_document = parser.parseFromString(data, 'text/html');
 
-   link.innerText = tile.title;
-   if (tile.single) {
-      link.innerText += ' (Сингл)';
+//    //    //         const posters = parsed_document.querySelectorAll('.poster');
+
+//    //    //         if (posters.length == 0) {
+//    //    //             const emptyResults = document.getElementById('noResults').content.cloneNode(true);
+//    //    //             resultsDiv.append(emptyResults);
+//    //    //         } else {
+//    //    //             for (let i = 0; i < posters.length; i++) {
+//    //    //                 const description = posters[i].querySelectorAll('.poster__float-description');
+//    //    //                 const release = description[1].innerText;
+//    //    //                 const genres = description[2].innerText
+//    //    //                 if (!release.includes('Завершен') && genres.includes('Яой')) continue;
+//    //    //                 const linkWrap = document.createElement('div');
+//    //    //                 const link = document.createElement('a');
+//    //    //                 link.innerText = posters[i].querySelector('.poster__float-heading').innerText.match(/[^/]+$/gm)[0];
+//    //    //                 link.href = posters[i].href;
+//    //    //                 link.target = '_blank';
+//    //    //                 linkWrap.append(link);
+
+//    //    //                 linkWrap.style = 'display: block; font-size: 1.5em; padding: .5em';
+//    //    //                 resultsDiv.append(linkWrap);
+//    //    //             }
+//    //    //         }
+//    //    //     });
+//    // }
+// }
+
+function _createTile(tile, siteId, grouple = true) {
+   const tileTpl = document.getElementById('tileTpl').content.cloneNode(true);
+
+   tileTpl.querySelector('.img-responsive').src = `/image?src=${tile.img}`;
+
+   const cardLink = tileTpl.querySelector('.card-link');
+   cardLink.innerHTML = tile.title + (tile.single ? ' (Сингл)' : '');
+   cardLink.href = baseUrls[siteId - 1] + tile.href;
+   cardLink.target = '_blank';
+
+   const tileFooter = tileTpl.querySelector('.card-subtitle');
+   for (const tag of tile.tags) {
+      const tagTpl = document.createElement('span');
+      tagTpl.classList.add('chip');
+      tagTpl.innerHTML = tag;
+
+      tileFooter.append(tagTpl);
    }
 
-   link.target = '_blank';
-   link.href = baseUrls[siteId - 1] + tile.href;
-   link.dataset['id'] = tile['data_id'];
+   // const linkWrap = document.createElement('div');
+   // const link = document.createElement('a');
 
-   linkWrap.append(link);
+   // linkWrap.classList.add('link-wrap');
 
-   if (tile.yaoi) {
-      const chip = document.createElement('div');
-      chip.classList.add('chip', 'bg-error');
-      chip.innerText = 'yaoi';
-      linkWrap.append(chip);
-   }
+   // link.innerText = tile.title;
+   // if (tile.single) {
+   //    link.innerText += ' (Сингл)';
+   // }
+
+   // link.target = '_blank';
+   // link.href = baseUrls[siteId - 1] + tile.href;
+   // link.dataset['id'] = tile['data_id'];
+
+   // linkWrap.append(link);
+
+   // if (tile.yaoi) {
+   //    const chip = document.createElement('div');
+   //    chip.classList.add('chip', 'bg-error');
+   //    chip.innerText = 'yaoi';
+   //    linkWrap.append(chip);
+   // }
 
    // if (grouple) {
    //    const refreshStatus = document.createElement('span');
@@ -53,53 +117,7 @@ function createLink(tile, siteId, grouple = true) {
    //    linkWrap.append(refreshStatus);
    // }
 
-   return linkWrap;
-}
-
-// TODO: rewrite shakai module
-async function getShakaiManga(url, resultsDiv) {
-   await fetch(url)
-      .then((response) => {
-         return response.text();
-      })
-      .then((data) => {
-         console.log(data);
-      });
-
-   // shakai
-   // if (siteId == 3) {
-   //    const url = proxyUrl + encodeURIComponent(baseUrls[2] + offset);
-   //    getShakaiManga(url, resultsDiv);
-   //    // await fetch(url)
-   //    //     .then(response => { return response.text() })
-   //    //     .then(data => {
-   //    //         const parser = new DOMParser();
-   //    //         const parsed_document = parser.parseFromString(data, 'text/html');
-
-   //    //         const posters = parsed_document.querySelectorAll('.poster');
-
-   //    //         if (posters.length == 0) {
-   //    //             const emptyResults = document.getElementById('noResults').content.cloneNode(true);
-   //    //             resultsDiv.append(emptyResults);
-   //    //         } else {
-   //    //             for (let i = 0; i < posters.length; i++) {
-   //    //                 const description = posters[i].querySelectorAll('.poster__float-description');
-   //    //                 const release = description[1].innerText;
-   //    //                 const genres = description[2].innerText
-   //    //                 if (!release.includes('Завершен') && genres.includes('Яой')) continue;
-   //    //                 const linkWrap = document.createElement('div');
-   //    //                 const link = document.createElement('a');
-   //    //                 link.innerText = posters[i].querySelector('.poster__float-heading').innerText.match(/[^/]+$/gm)[0];
-   //    //                 link.href = posters[i].href;
-   //    //                 link.target = '_blank';
-   //    //                 linkWrap.append(link);
-
-   //    //                 linkWrap.style = 'display: block; font-size: 1.5em; padding: .5em';
-   //    //                 resultsDiv.append(linkWrap);
-   //    //             }
-   //    //         }
-   //    //     });
-   // }
+   return tileTpl;
 }
 
 async function _queryData(siteId, offset) {
@@ -119,17 +137,14 @@ function _renderData(data, siteId, resultsDiv) {
    }
 
    for (const tile of data) {
-      const link = createLink(tile, siteId, true);
-      resultsDiv.append(link);
+      const tileTpl = _createTile(tile, siteId, true);
+      resultsDiv.append(tileTpl);
    }
 }
 
-async function getTitlesFromPage(siteId, offset = 0) {
-   if (document.querySelector('.results')) document.querySelector('.results').remove();
-
-   const resultsDiv = document.createElement('div');
-   resultsDiv.classList.add('results');
-   document.body.append(resultsDiv);
+async function init(siteId, offset = 0) {
+   const resultsDiv = document.querySelector('.columns');
+   resultsDiv.innerHTML = null;
 
    const data = await _queryData(siteId, offset);
    _renderData(data, siteId, resultsDiv);
@@ -145,13 +160,13 @@ const pageNumCookie = Cookies.get('pageNum');
 if (siteIdCookie != undefined && pageNumCookie != undefined) {
    siteSelect.value = siteIdCookie;
    pageInput.value = pageNumCookie;
-   getTitlesFromPage(siteSelect.value, pageInput.value);
+   init(siteSelect.value, pageInput.value);
 } else {
-   getTitlesFromPage(1, 0);
+   init(1, 0);
 }
 
 loadBtn.addEventListener('click', () => {
    Cookies.set('siteId', siteSelect.value, { expires: 365 });
    Cookies.set('pageNum', pageInput.value, { expires: 365 });
-   getTitlesFromPage(siteSelect.value, pageInput.value);
+   init(siteSelect.value, pageInput.value);
 });
