@@ -1,9 +1,13 @@
 from flask import Flask, render_template, send_file, request
 from urllib.request import Request, urlopen
+from urllib.parse import urlencode
 from bs4 import BeautifulSoup
+from datetime import datetime
 import pathlib
+import json
 
-BASE_URLS = ['https://readmanga.live', 'https://mintmanga.live']
+BASE_URLS = ['https://readmanga.live', 'https://mintmanga.live',
+             'https://shakai.ru/take/catalog/request/shakai']
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
 
 
@@ -53,10 +57,58 @@ def __extract_grouple_links(soup):
     return tiles_data
 
 
+def __extract_shakai_links(url, offset):
+    post_dict = {
+        "dataRun": "catalog",
+        "selectCatalog": "manga",
+        "itemMarker":  datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "selectPage": offset,
+        "dataSorting":  "false,po-rejtingu,false,false,false,false,false",
+        "dataType": "false,false,false,false,false,false,false,false",
+        "dataStatus": "false,zavershen,false,est",
+        "dataGenre": "false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false",
+        "dataSeason": "false, false, false, false, false, false"
+    }
+
+    req = Request(
+        url=url,
+        headers={'User-Agent': 'Mozilla/5.0',
+                 'Content-Type': 'application/x-www-form-urlencoded'},
+        data=urlencode(post_dict).encode("utf-8")
+    )
+
+    json_data = json.loads(urlopen(req).read())
+
+    result = []
+    for item in json_data['result']:
+        record = {}
+        
+        record['data_id'] = item['output-id']
+        record['title'] = item['output-name']
+        record['href'] = 'https:' + item['output-link']
+        record['img'] = 'https:' + item['output-cover']
+
+        record['yaoi'] = False
+
+        tags_data = []
+        tags = item['output-genre'].split(', ')
+        for tag in tags:
+            tags_data.append(tag)
+            if (tag == 'Яой'):
+                record['yaoi'] = True
+
+        record['tags'] = tags_data
+        record['single'] = False
+
+        result.append(record)
+
+    return result
+
+
 def __extract_links(site_id, soup):
     if site_id in (0, 1):
         return __extract_grouple_links(soup)
-    return
+    return None
 
 
 def __get_links(site_id=0, offset=1):
@@ -68,6 +120,9 @@ def __get_links(site_id=0, offset=1):
             url = url + '/list/another/noyaoi?sortType=votes&filter=translated'
         if offset:
             url = url + '&offset=' + str((offset-1)*70)
+
+    if site_id == 2:
+        return __extract_shakai_links(url, offset)
 
     page = __get_page_contents(url)
     soup = BeautifulSoup(page, 'html.parser')

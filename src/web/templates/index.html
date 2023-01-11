@@ -6,60 +6,7 @@
       <title>[read|mint]manga & shakai simple search</title>
       <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
       <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
-
-      <style>
-         .link-wrap {
-            display: flex;
-            align-items: center;
-            font-size: 1.5em;
-            padding: 0.5em;
-         }
-
-         .link-wrap > span {
-            display: flex;
-            margin-left: 20px;
-            cursor: pointer;
-         }
-
-         .chip {
-            margin-left: 8px;
-            font-size: 14px;
-         }
-
-         .columns {
-            row-gap: 16px;
-            padding: 0 8px;
-         }
-
-         .card {
-            flex-direction: row;
-         }
-
-         .card-header {
-            min-width: 0;
-         }
-
-         .card-subtitle {
-            padding-top: 4px;
-         }
-
-         .card-image {
-            width: 130px;
-            flex-shrink: 0;
-         }
-
-         .text-overflow {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-         }
-
-         .chip {
-            margin-left: 0;
-            font-size: 14px;
-            margin-right: 8px;
-         }
-      </style>
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
    </head>
 
    <body style="background-color: #f7f8f9">
@@ -67,7 +14,7 @@
          <select class="form-select" id="siteSelect">
             <option selected value="1">readmanga</option>
             <option value="2">mintmanga</option>
-            <!-- <option value="3">shakai</option> -->
+            <option value="3">shakai</option>
          </select>
 
          <input
@@ -92,8 +39,8 @@
                   <img class="img-responsive p-centered" width="130" src="" alt="" />
                </div>
                <div class="card-header">
-                  <div class="card-title text-overflow h5">
-                     <a href="" class="card-link"> </a>
+                  <div class="card-title h5">
+                     <a href="" class="card-link text-overflow"> </a>
                   </div>
                   <div class="card-subtitle"></div>
                </div>
