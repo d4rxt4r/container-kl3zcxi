@@ -1,3 +1,16 @@
+# v0.0.5 (Sat Jan 07 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of https://github.com/d4rxt4r/container-kl3zcxi ([@d4rxt4r](https://github.com/d4rxt4r))
+- added thumbnails to tiles ([@d4rxt4r](https://github.com/d4rxt4r))
+
+#### Authors: 1
+
+- D4RKST4R ([@d4rxt4r](https://github.com/d4rxt4r))
+
+---
+
 # v0.0.4 (Fri Jan 06 2023)
 
 #### ⚠️ Pushed to `main`
