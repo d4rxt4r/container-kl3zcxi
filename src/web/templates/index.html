@@ -11,6 +11,10 @@
 
    <body style="background-color: #f7f8f9">
       <div class="pagination p-2">
+         <button class="btn btn-primary" id="settings">
+            <i class="icon icon-more-horiz"></i>
+         </button>
+
          <select class="form-select" id="siteSelect">
             <option selected value="1">readmanga</option>
             <option value="2">mintmanga</option>
@@ -30,7 +34,66 @@
          <button class="btn btn-primary" id="load">Загрузить!</button>
       </div>
 
+      <div class="settings pb-2 pr-2 pl-2">
+         <!-- TODO: Add tabs for diff platforms -->
+         <!-- https://picturepan2.github.io/spectre/components/tabs.html#tabs -->
+
+         <div>
+            <div class="form-group">
+               <div class="col-12">
+                  <div class="input-group">
+                     <span class="input-group-addon">username</span>
+                     <input class="form-input" type="text" id="username" placeholder="username" />
+                  </div>
+               </div>
+            </div>
+
+            <div class="form-group">
+               <div class="col-12">
+                  <div class="input-group">
+                     <span class="input-group-addon">password</span>
+                     <input class="form-input" type="text" id="password" placeholder="password" />
+                  </div>
+               </div>
+            </div>
+
+            <div class="footer">
+               <a class="btn" onclick="login()">login</a>
+
+               <div id="status">
+                  <span> status: </span>
+                  <div class="chip">
+                     <div class="avatar avatar-sm bg-red"></div>
+                     <span class="status-text">
+                        not connected
+                     </span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
       <div class="columns"></div>
+
+      <div class="pagination p-2">
+         <select class="form-select" id="siteSelect">
+            <option selected value="1">readmanga</option>
+            <option value="2">mintmanga</option>
+            <option value="3">shakai</option>
+         </select>
+
+         <input
+            class="form-input"
+            type="number"
+            step="1"
+            value="1"
+            placeholder="0"
+            id="pageInput"
+            style="width: 25vw"
+         />
+
+         <button class="btn btn-primary" id="load">Загрузить!</button>
+      </div>
 
       <template id="tileTpl">
          <div class="column col-4 col-xs-12">
@@ -41,6 +104,8 @@
                <div class="card-header">
                   <div class="card-title h5">
                      <a href="" class="card-link text-overflow"> </a>
+
+                     <span class="card-status"></span>
                   </div>
                   <div class="card-subtitle"></div>
                </div>

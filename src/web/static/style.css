@@ -16,9 +16,17 @@
    font-size: 14px;
 }
 
+.chip .avatar.bg-red {
+   background: red;
+}
+
+.chip .avatar.bg-green {
+   background: green;
+}
+
 .columns {
    row-gap: 16px;
-   padding: 0 8px;
+   margin: 0;
 }
 
 .card {
@@ -27,6 +35,13 @@
 
 .card-header {
    min-width: 0;
+   width: 100%;
+}
+
+.card-title {
+   display: flex;
+   justify-content: space-between;
+   align-items: baseline;
 }
 
 .card-subtitle {
@@ -42,6 +57,10 @@
    flex-shrink: 0;
 }
 
+.card-status {
+   flex-shrink: 0;
+}
+
 .text-overflow {
    overflow: hidden;
    text-overflow: ellipsis;
@@ -54,4 +73,18 @@
    margin-left: 0;
    font-size: 14px;
    margin-right: 8px;
+}
+
+.settings {
+   display: none;
+}
+
+.settings.visible {
+   display: block;
+}
+
+.settings .footer {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
 }

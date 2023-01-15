@@ -1,5 +1,4 @@
 const baseUrls = ['https://readmanga.live', 'https://mintmanga.live', 'https://shakai.ru/catalog/manga/'];
-// const userID = 582791;
 
 const SITE_ID = {
    READ: 1,
@@ -7,28 +6,44 @@ const SITE_ID = {
    SHAKAI: 3
 };
 
-// TODO: fix read/mint manga status check
-// function setStatus(data) {
-//    const script = document.querySelector('.status-script');
-//    const id = script.attributes.id;
-//    const title = document.querySelector(`[data-id="${id}"]`);
-//    if (title.children.length == 0) {
-//       title.innerHTML += `<span> -- ${data.data.status}</span>`;
-//    } else {
-//       title.children[0].innerText = ` -- ${data.data.status}`;
-//    }
-//    script.remove();
-// }
+const BOOKMARK_STATUS = {
+   COMPLETED: '#22903b',
+   DROPPED: '#707070',
+   PLANED: '#c40af8',
+   WATCHING: '#429cc7',
+   FAVORITE: '#FFD050',
+   USER_DEFINED: '#4200FF',
+   ON_HOLD: '#dc3545'
+};
 
-// function getStatus(id, siteId) {
-//    const statusScript = document.createElement('script');
-//    statusScript.attributes.id = id;
-//    statusScript.classList.add('status-script');
-//    statusScript.src = `https://grouple.co/external/status?callback=setStatus&id=${id}&site=${siteId}&user=${userID}`;
-//    document.body.append(statusScript);
-// }
+async function __get_gwt(siteId, username, password) {
+   if (!username && !password) {
+      return;
+   }
 
-function _createTile(tile, siteId, grouple = true) {
+   const res = await fetch(`/login/${siteId}/?username=${username}&password=${password}`);
+   return await res.json();
+}
+
+function __set_status(status) {
+   const statusDiv = document.getElementById('status');
+   const avatar = statusDiv.querySelector('.avatar');
+   const statusText = statusDiv.querySelector('.status-text');
+
+   if (status) {
+      avatar.classList.add('bg-green');
+      avatar.classList.remove('bg-red');
+
+      statusText.innerText = 'connected';
+   } else {
+      avatar.classList.add('bg-red');
+      avatar.classList.remove('bg-green');
+
+      statusText.innerText = 'not connected';
+   }
+}
+
+function __createTile(tile, siteId) {
    const tileTpl = document.getElementById('tileTpl').content.cloneNode(true);
 
    tileTpl.querySelector('.img-responsive').src = siteId === SITE_ID.SHAKAI ? tile.img : `/image?src=${tile.img}`;
@@ -50,22 +65,25 @@ function _createTile(tile, siteId, grouple = true) {
       tileFooter.append(tagTpl);
    }
 
-   // if (grouple) {
-   //    const refreshStatus = document.createElement('span');
-   //    refreshStatus.innerHTML = '<i class="icon icon-refresh"></i>';
-   //    refreshStatus.setAttribute('onclick', `getStatus(${tile['data_id']}, ${siteId})`);
-   //    linkWrap.append(refreshStatus);
-   // }
+   if (tile.status) {
+      const statusTpl = tileTpl.querySelector('.card-status');
+      statusTpl.innerHTML = '❤';
+      statusTpl.style = `color: ${BOOKMARK_STATUS[tile.status]}`;
+   }
 
    return tileTpl;
 }
 
-async function _queryData(siteId, offset) {
-   const res = await fetch(`/query/${siteId - 1}/${offset}`);
+async function __queryData(siteId, offset) {
+   const res = await fetch(`/query/${siteId - 1}/${offset}`, {
+      headers: {
+         'x-token': siteId === 2 ? null : window.gwt
+      }
+   });
    return await res.json();
 }
 
-function _renderData(data, siteId, resultsDiv) {
+function __renderData(data, siteId, resultsDiv) {
    if (!data.length) {
       const emptyResults = document.getElementById('noResults').content.cloneNode(true);
       resultsDiv.append(emptyResults);
@@ -73,8 +91,17 @@ function _renderData(data, siteId, resultsDiv) {
    }
 
    for (const tile of data) {
-      const tileTpl = _createTile(tile, siteId, true);
+      const tileTpl = __createTile(tile, siteId);
       resultsDiv.append(tileTpl);
+   }
+}
+
+function __login() {
+   const gwt_cookie = Cookies.get('gwt');
+
+   if (gwt_cookie) {
+      window.gwt = gwt_cookie;
+      __set_status(true);
    }
 }
 
@@ -82,8 +109,33 @@ async function init(siteId, offset = 0) {
    const resultsDiv = document.querySelector('.columns');
    resultsDiv.innerHTML = null;
 
-   const data = await _queryData(siteId, offset);
-   _renderData(data, +siteId, resultsDiv);
+   __login();
+
+   const data = await __queryData(siteId, offset);
+   __renderData(data, +siteId, resultsDiv);
+}
+
+async function login() {
+   const siteId = parseInt(siteSelect.value);
+   const username = document.getElementById('username').value;
+   const password = document.getElementById('password').value;
+
+   if (siteId === SITE_ID.SHAKAI) {
+      return;
+   }
+
+   const res = await __get_gwt(siteId, username, password);
+
+   if (!res.success) {
+      __set_status(false);
+      return;
+   }
+
+   Cookies.set('gwt', res.token, { expires: 365 });
+   Cookies.set('grouple_username', username, { expires: 365 });
+   Cookies.set('grouple_password', password, { expires: 365 });
+
+   __set_status(true);
 }
 
 const loadBtn = document.getElementById('load');
@@ -93,7 +145,7 @@ const pageInput = document.getElementById('pageInput');
 const siteIdCookie = Cookies.get('siteId');
 const pageNumCookie = Cookies.get('pageNum');
 
-if (siteIdCookie != undefined && pageNumCookie != undefined) {
+if (siteIdCookie && pageNumCookie) {
    siteSelect.value = siteIdCookie;
    pageInput.value = pageNumCookie;
    init(siteSelect.value, pageInput.value);
@@ -105,4 +157,8 @@ loadBtn.addEventListener('click', () => {
    Cookies.set('siteId', siteSelect.value, { expires: 365 });
    Cookies.set('pageNum', pageInput.value, { expires: 365 });
    init(siteSelect.value, pageInput.value);
+});
+
+document.getElementById('settings').addEventListener('click', () => {
+   document.querySelector('.settings').classList.toggle('visible');
 });
