@@ -1,3 +1,16 @@
+# v0.0.8 (Sun Jan 15 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of https://github.com/d4rxt4r/container-kl3zcxi ([@d4rxt4r](https://github.com/d4rxt4r))
+- fixed token loading ([@d4rxt4r](https://github.com/d4rxt4r))
+
+#### Authors: 1
+
+- D4RKST4R ([@d4rxt4r](https://github.com/d4rxt4r))
+
+---
+
 # v0.0.7 (Sun Jan 15 2023)
 
 #### ⚠️ Pushed to `main`
