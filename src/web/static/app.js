@@ -75,9 +75,11 @@ function __createTile(tile, siteId) {
 }
 
 async function __queryData(siteId, offset) {
+   const token = siteId === 2 ? null : window.gwt || null;
+
    const res = await fetch(`/query/${siteId - 1}/${offset}`, {
       headers: {
-         'x-token': siteId === 2 ? null : window.gwt
+         'x-token': token
       }
    });
    return await res.json();
